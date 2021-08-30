@@ -36,14 +36,14 @@ def mongo_eat_pkl(pkl_path, database, collection):
             historical_df = pd.DataFrame(columns = historical_cols)
         else:
             historical_df = pd.DataFrame(historical_df, columns = historical_cols)
-        ticker_docs[i]['Historical data'] = historical_df.to_dict(orient = 'records')
+        ticker_docs[i]['Historical Data'] = historical_df.to_dict(orient = 'records')
     coll.insert_many(ticker_docs)
 
 if __name__ == '__main__':
     database_name = 'stock_db'
     database = client[database_name] #create database
     coll_extension = '_data'
-    curr_colls = database.collection_names()
+    curr_colls = database.list_collection_names()
     curr_colls = [x.split(coll_extension)[0] for x in curr_colls]
 
     ticker_files = os.listdir('../pickles/ticker_data/success/')
