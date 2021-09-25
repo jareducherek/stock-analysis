@@ -22,8 +22,8 @@ endif
 
 ## Install Python Dependencies
 requirements: test_environment
-$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
-$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
+	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
+	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
 ifeq (True,$(HAS_CONDA))
 	@echo ">>> Detected conda, creating conda environment."
 	$(PYTHON_INTERPRETER) -m pip install "pymongo[srv]"
