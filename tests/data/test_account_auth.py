@@ -1,8 +1,6 @@
 import pytest
 from src.utils.account_auth import generate_key, save_login, get_login
 
-
-
 def test_account_auth():
     key = generate_key(save=False)
     test_ws = 'test'
