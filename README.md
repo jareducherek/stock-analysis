@@ -39,6 +39,32 @@ To add scraped pickle files to MongoDB:
 python src/data/pickled_mongo.py
 ```
 
+Developing
+==============================
+Some useful commands for after developing code for the repo:
+
+MyPy:
+```
+mypy .
+```
+
+Flake8:
+```
+flake8 .
+```
+
+AutoPEP8:
+Before finishing final changes, use `autopep8` to help reformat to standard.
+```
+autopep8 --in-place --recursive --aggressive --aggressive .
+```
+
+PyTest:
+```
+pytest -v --cov tests/
+```
+
+
 
 Project Organization
 ------------
