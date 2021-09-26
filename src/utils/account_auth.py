@@ -2,15 +2,12 @@ from cryptography.fernet import Fernet
 import os
 import argparse
 from dotenv import load_dotenv, find_dotenv, set_key
+dotenv_path = find_dotenv()
+load_dotenv(dotenv_path)
 
 ENCODING = 'utf-8'
 FERNET_KEY = 'FERNET_KEY'
 
-# find .env automagically by walking up directories until it's found
-dotenv_path = find_dotenv()
-
-# load up the entries as environment variables
-load_dotenv(dotenv_path)
 
 def generate_key(save = True):
     key = Fernet.generate_key()
