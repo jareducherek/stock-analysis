@@ -1,7 +1,44 @@
 stock-analysis
 ==============================
+Exploratory data analysis and machine learning techniques applied to time-series data associated with stock prices.
 
-Exploratory analysis of scraped stock data.
+Installation instructions
+==============================
+- clone this repo, and either use make or run the commands manually in the Makefile:
+```
+make create_environment
+conda activate stock-analysis
+make requirements
+```
+
+Running
+==============================
+To activate the environment:
+```
+conda activate stock-analysis
+```
+
+To setup account details in .env file:
+```
+python src/utils/account_auth.py -h
+```
+
+To make a list of target tickers to scrape:
+```
+python src/data/get_tickers.py
+```
+
+To scrape Fidelity for those tickers:
+```
+python src/data/scrape_fidelity_analysts.py
+```
+
+To add scraped pickle files to MongoDB:
+- add MongoDB key to .env file
+```
+python src/data/pickled_mongo.py
+```
+
 
 Project Organization
 ------------
