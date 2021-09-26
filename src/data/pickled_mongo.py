@@ -6,7 +6,14 @@ from pymongo import MongoClient
 import os
 from tqdm import tqdm
 
-client = MongoClient("mongodb+srv://master:YTJLdtq1ByQxE466@cluster0.cql3g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+from src.utils.config import RAW_DIR
+from dotenv import load_dotenv, find_dotenv, set_key
+dotenv_path = find_dotenv()
+load_dotenv(dotenv_path)
+
+client = MongoClient(os.environ.get('MONGO_KEY'))
+
+PICKLE_DIR = RAW_DIR / 'pickles'
 
 def mongo_eat_pkl(pkl_path, database, collection):
     """
@@ -14,8 +21,8 @@ def mongo_eat_pkl(pkl_path, database, collection):
     """
 
     pkl_convert = pd.read_pickle(pkl_path)
-    overview_cols = pd.read_pickle('../pickles/ticker_analyst_overview_column_names.pickle')
-    historical_cols = pd.read_pickle('../pickles/ticker_specific_analyst_column_names.pickle')
+    overview_cols = pd.read_pickle(PICKLE_DIR / 'ticker_analyst_overview_column_names.pickle')
+    historical_cols = pd.read_pickle(PICKLE_DIR / 'ticker_specific_analyst_column_names.pickle')
     historical_dfs = []
 
     for i in pkl_convert:
@@ -46,11 +53,11 @@ if __name__ == '__main__':
     curr_colls = database.list_collection_names()
     curr_colls = [x.split(coll_extension)[0] for x in curr_colls]
 
-    ticker_files = os.listdir('../pickles/ticker_data/success/')
+    ticker_files = os.listdir(PICKLE_DIR / 'ticker_data/success/')
     ticker_files = [x.split('.pickle')[0] for x in ticker_files if 'pickle' in x]
 
     new_tickers = list(set(ticker_files) - set(curr_colls))
     tqdm.write(f'saving {len(new_tickers)} new tickers to Mongo...')
     for ticker_file in tqdm(new_tickers):
-        mongo_eat_pkl(f'../pickles/ticker_data/success/{ticker_file}.pickle',
+        mongo_eat_pkl(PICKLE_DIR / f'ticker_data/success/{ticker_file}.pickle',
                       database, f'{ticker_file}{coll_extension}')
