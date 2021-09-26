@@ -1,5 +1,7 @@
 stock-analysis
 ==============================
+![Tests](https://github.com/jareducherek/stock-analysis/actions/workflows/tests.yml/badge.svg)
+
 Exploratory data analysis and machine learning techniques applied to time-series data associated with stock prices.
 
 Installation instructions
