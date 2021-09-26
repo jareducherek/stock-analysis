@@ -2,7 +2,10 @@ import bs4 as bs
 import pickle
 import requests
 
-def save_sp500_tickers():
+from src.utils.config import EXTERNAL_DIR
+TARGET_PATH = EXTERNAL_DIR / 'sp500_tickers.txt'
+
+def get_sp500_tickers(save = True):
     resp = requests.get('http://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
     soup = bs.BeautifulSoup(resp.text, 'lxml')
     table = soup.find('table', {'id': 'constituents'})
@@ -11,11 +14,13 @@ def save_sp500_tickers():
         ticker = row.find('td').text
         tickers.append(ticker.replace('\n', ''))
 
-    with open("../pickles/sp500tickers.pickle","wb") as f:
-        pickle.dump(tickers, f)
+    if save:
+        textfile = open(TARGET_PATH, "w")
+        for element in tickers:
+            textfile.write(element + "\n")
+        textfile.close()
 
-    print(tickers)
     return tickers
 
 if __name__ == '__main__':
-    save_sp500_tickers()
+    get_sp500_tickers()
