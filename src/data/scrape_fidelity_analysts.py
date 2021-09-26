@@ -12,8 +12,11 @@ from datetime import datetime
 from tqdm import tqdm
 from pymongo import MongoClient
 
-from account_auth import get_login
-user, pw = get_login('../authentication/')
+from src.utils.config import RAW_DIR
+PICKLE_DIR = RAW_DIR / 'pickles'
+from src.utils.account_auth import get_login, get_key
+key = get_key()
+user, pw = get_login('FIDELITY', key)
 
 
 def fidelity_login():
@@ -150,7 +153,7 @@ def scrape_analyst_data(driver, ticker):
     except exceptions.TimeoutException:
         error = f'analyst site did not load: {ticker}'
         tqdm.write(error)
-        with open(f'../pickles/ticker_data/no_load/{ticker}.pickle', 'wb') as f:
+        with open(PICKLE_DIR / f'ticker_data/no_load/{ticker}.pickle', 'wb') as f:
             pickle.dump(error, f)
         return driver
 
@@ -158,7 +161,7 @@ def scrape_analyst_data(driver, ticker):
         table, urls = scrape_overview_data(driver, dropdown)
     except BaseException:
         error = f'analyst scraping failed: {ticker}'
-        with open(f'../pickles/ticker_data/failed/{ticker}.pickle', 'wb') as f:
+        with open(PICKLE_DIR / f'ticker_data/failed/{ticker}.pickle', 'wb') as f:
             pickle.dump(error, f)
         tqdm.write(error)
         return driver
@@ -187,9 +190,9 @@ def scrape_analyst_data(driver, ticker):
         full_table[i] += [sub_table]
 
     if error:
-        name = f'../pickles/ticker_data/error/{ticker}.pickle'
+        name = PICKLE_DIR / f'ticker_data/error/{ticker}.pickle'
     else:
-        name = f'../pickles/ticker_data/success/{ticker}.pickle'
+        name = PICKLE_DIR / f'ticker_data/success/{ticker}.pickle'
     with open(name, 'wb') as f:
         pickle.dump(full_table, f)
 
@@ -197,11 +200,11 @@ def scrape_analyst_data(driver, ticker):
 
 
 if __name__ == '__main__':
-    with open('../pickles/sp500tickers.pickle', 'rb') as f:
+    with open(PICKLE_DIR / f'sp500tickers.pickle', 'rb') as f:
         tickers = pickle.load(f)
 
     finished_tickers = [x.split('.')[0] for x in os.listdir(
-        '../pickles/ticker_data/success/') if 'pickle' in x]
+        PICKLE_DIR / f'ticker_data/success/') if 'pickle' in x]
     tickers = [x for x in tickers if x not in finished_tickers]
     print(f'starting scraping {len(tickers)} tickers from fidelity')
 

@@ -49,6 +49,10 @@ def get_login(
     return user, pw
 
 
+def get_key():
+    key = os.environ.get(FERNET_KEY).encode()
+    return key
+
 if __name__ == '__main__':
     func_list = [generate_key, save_login, get_login]
     func_names = [f.__name__ for f in func_list]
@@ -83,9 +87,9 @@ if __name__ == '__main__':
     if chosen_func.__name__ == 'generate_key':
         chosen_func(save=SAVE)
     else:
-        key = os.environ.get(FERNET_KEY).encode()
         USER_KEY = f'{args.website_name}_USER'
         PW_KEY = f'{args.website_name}_PW'
+        key = get_key()
         if chosen_func.__name__ == 'save_login':
             chosen_func(args.website_name, key, args.user, args.pw, save=SAVE)
         elif chosen_func.__name__ == 'get_login':
