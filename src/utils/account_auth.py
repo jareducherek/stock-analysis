@@ -9,14 +9,15 @@ ENCODING = 'utf-8'
 FERNET_KEY = 'FERNET_KEY'
 
 
-def generate_key(save = True):
+def generate_key(save=True):
     key = Fernet.generate_key()
     if save:
         set_key(dotenv_path, FERNET_KEY, key.decode(ENCODING))
 
     return key
 
-def save_login(website_name: str, key: bytes, user: str, pw: str, save = True):
+
+def save_login(website_name: str, key: bytes, user: str, pw: str, save=True):
     fern = Fernet(key)
 
     user = fern.encrypt(user.encode()).decode(ENCODING)
@@ -27,10 +28,15 @@ def save_login(website_name: str, key: bytes, user: str, pw: str, save = True):
 
     return user, pw
 
-def get_login(website_name: str, key: bytes, encrypted_user: str=None, encrypted_pw: str=None):
+
+def get_login(
+        website_name: str,
+        key: bytes,
+        encrypted_user: str = None,
+        encrypted_pw: str = None):
     fern = Fernet(key)
 
-    if encrypted_user==None and encrypted_pw==None:
+    if encrypted_user is None and encrypted_pw is None:
         encrypted_user = os.environ.get(USER_KEY)
         encrypted_pw = os.environ.get(PW_KEY)
 
@@ -50,14 +56,20 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='account auth')
     # Add the -f/--func argument
-    parser.add_argument('-f', '--func', dest='func',
-                        choices=func_names,
-                        required=True,
-                        help="""Choose one of the specified function to be run.""")
-    parser.add_argument('-ws', '--website-name', dest='website_name',
-                        choices=['FIDELITY'],
-                        required=False,
-                        help="""Choose one of the specified function to be run.""")
+    parser.add_argument(
+        '-f',
+        '--func',
+        dest='func',
+        choices=func_names,
+        required=True,
+        help="""Choose one of the specified function to be run.""")
+    parser.add_argument(
+        '-ws',
+        '--website-name',
+        dest='website_name',
+        choices=['FIDELITY'],
+        required=False,
+        help="""Choose one of the specified function to be run.""")
     parser.add_argument('--user', dest='user',
                         required=False,
                         help="""Login username.""")
@@ -69,13 +81,13 @@ if __name__ == '__main__':
     chosen_func = funcs_dict[args.func]
     SAVE = True
     if chosen_func.__name__ == 'generate_key':
-        chosen_func(save = SAVE)
+        chosen_func(save=SAVE)
     else:
         key = os.environ.get(FERNET_KEY).encode()
         USER_KEY = f'{args.website_name}_USER'
         PW_KEY = f'{args.website_name}_PW'
         if chosen_func.__name__ == 'save_login':
-            chosen_func(args.website_name, key, args.user, args.pw, save = SAVE)
+            chosen_func(args.website_name, key, args.user, args.pw, save=SAVE)
         elif chosen_func.__name__ == 'get_login':
             user, pw = chosen_func(args.website_name, key)
             print(user, pw)
