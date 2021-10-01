@@ -1,9 +1,7 @@
 name: Tests
-
 on:
   - push
   - pull_request
-
 jobs:
   test:
     runs-on: ${{ matrix.os }}
@@ -11,16 +9,39 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         python-version: ['3.8', '3.9']
-
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install tox tox-gh-actions
     - name: Test with tox
       run: tox
+
+    - name: Get Code Coverage
+      id: fetch_coverage_percent
+      run: |
+        pytest --cov=src/ tests/ | grep TOTAL | tail -c 5 | grep -Eo '[0-9]{1,4}'")
+        echo "COVERAGE=${coverage}" >> $GITHUB_ENV
+    - uses: github-actions/badge-create-action@v1.2.1
+      id: create_badge_coverage
+      with:
+        label: 'Code Coverage'
+        status: ${{ env.COVERAGE }}%
+        color: ${{
+          env.COVERAGE > 90 && 'green'  ||
+          env.COVERAGE > 80 && 'yellow' ||
+          env.COVERAGE > 70 && 'yellow' ||
+          env.COVERAGE > 60 && 'orange' ||
+          env.COVERAGE > 50 && 'orange' ||
+          env.COVERAGE > 40 && 'red'    ||
+          env.COVERAGE > 30 && 'red'    ||
+          env.COVERAGE > 20 && 'red'    ||
+          'red' }}
+        path: 'docs/source/img/code_coverage.svg'
