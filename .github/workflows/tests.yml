@@ -29,10 +29,12 @@ jobs:
       run: |
         pytest --cov=src/ tests/ | grep TOTAL | tail -c 5 | grep -Eo '[0-9]{1,4}'")
         echo "COVERAGE=${coverage}" >> $GITHUB_ENV
-    - uses: github-actions/badge-create-action@v1.2.1
+
+    - name: Badge Action
+      uses: emibcn/badge-action@v1.2.4
       id: create_badge_coverage
       with:
-        label: 'Code Coverage'
+        label: 'Test Coverage'
         status: ${{ env.COVERAGE }}%
         color: ${{
           env.COVERAGE > 90 && 'green'  ||
@@ -44,4 +46,4 @@ jobs:
           env.COVERAGE > 30 && 'red'    ||
           env.COVERAGE > 20 && 'red'    ||
           'red' }}
-        path: 'docs/source/img/code_coverage.svg'
+        path: '.github/badges/code_coverage.svg'
