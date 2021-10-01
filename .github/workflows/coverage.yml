@@ -29,6 +29,7 @@ jobs:
         # Create the directory where badges will be saved, if needed
         mkdir -p "${BADGE_PATH%/*}"
         echo "##[set-output name=path;]${BADGE_PATH}"
+        rm -rf ${BADGE_PATH}
 
         coverage=$(pytest --cov=src/ tests/ | grep TOTAL | tail -c 5 | grep -Eo '[0-9]{1,4}')
         echo "COVERAGE=${coverage}" >> $GITHUB_ENV
