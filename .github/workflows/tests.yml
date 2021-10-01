@@ -27,6 +27,7 @@ jobs:
   coverage:
     runs-on: ${{ matrix.os }}
     strategy:
+    steps:
       matrix:
         os: [windows-latest]
         python-version: ['3.9']
