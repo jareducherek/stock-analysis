@@ -35,6 +35,29 @@ jobs:
       with:
         label: 'Test Coverage'
         status: ${{ env.COVERAGE }}%
+        path: ${{ steps.coverage.outputs.path }}
+
+    - name: Generate a coverage value
+      id: coverage
+      run: |
+        # Generates a GitHub Workflow output named `lines`
+        echo "##[set-output name=lines;]${COVERAGE}"
+        # Create the directory where badges will be saved, if needed
+        mkdir -p "${BADGE_PATH%/*}"
+        echo "##[set-output name=path;]${BADGE_PATH}"
+
+        coverage=$(pytest --cov=src/ tests/ | grep TOTAL | tail -c 5 | grep -Eo '[0-9]{1,4}')
+        echo "COVERAGE=${coverage}" >> $GITHUB_ENV
+      env:
+        BADGE_PATH: .github/badges/test-badge.svg
+
+    # Use the output from the `coverage` step
+    - name: Generate the badge SVG image
+      uses: emibcn/badge-action@v1
+      id: badge
+      with:
+        label: 'Test coverage'
+        status: ${{ env.COVERAGE }}%
         color: ${{
           env.COVERAGE > 90 && 'green'  ||
           env.COVERAGE > 80 && 'yellow' ||
@@ -45,4 +68,29 @@ jobs:
           env.COVERAGE > 30 && 'red'    ||
           env.COVERAGE > 20 && 'red'    ||
           'red' }}
-        path: '.github/badges/code_coverage.svg'
+        path: ${{ steps.coverage.outputs.path }}
+
+    - name: Upload badge as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: badge
+        path: ${{ steps.coverage.outputs.path }}
+        if-no-files-found: error
+
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+    - name: Commit badge
+      env:
+        BADGE: ${{ steps.coverage.outputs.path }}
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add "${BADGE}"
+        git commit -m "Add/Update badge"
+    - name: Push badge commit
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ steps.extract_branch.outputs.branch }}
