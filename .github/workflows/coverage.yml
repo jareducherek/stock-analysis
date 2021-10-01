@@ -26,7 +26,7 @@ jobs:
     - name: Get Code Coverage
       id: fetch_coverage_percent
       run: |
-        pytest --cov=src/ tests/ | grep TOTAL | tail -c 5 | grep -Eo '[0-9]{1,4}'
+        coverage=$(pytest --cov=src/ tests/ | grep TOTAL | tail -c 5 | grep -Eo '[0-9]{1,4}')
         echo "COVERAGE=${coverage}" >> $GITHUB_ENV
 
     - name: Badge Action
