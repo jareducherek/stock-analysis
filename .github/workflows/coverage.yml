@@ -23,20 +23,6 @@ jobs:
         pip install -r requirements.txt
         pip install -r requirements_dev.txt
 
-    - name: Get Code Coverage
-      id: fetch_coverage_percent
-      run: |
-        coverage=$(pytest --cov=src/ tests/ | grep TOTAL | tail -c 5 | grep -Eo '[0-9]{1,4}')
-        echo "COVERAGE=${coverage}" >> $GITHUB_ENV
-
-    - name: Badge Action
-      uses: emibcn/badge-action@v1.2.4
-      id: create_badge_coverage
-      with:
-        label: 'Test Coverage'
-        status: ${{ env.COVERAGE }}%
-        path: ${{ steps.coverage.outputs.path }}
-
     - name: Generate a coverage value
       id: coverage
       run: |
@@ -50,6 +36,14 @@ jobs:
         echo "COVERAGE=${coverage}" >> $GITHUB_ENV
       env:
         BADGE_PATH: .github/badges/test-badge.svg
+
+    - name: Badge Action
+      uses: emibcn/badge-action@v1.2.4
+      id: create_badge_coverage
+      with:
+        label: 'Test Coverage'
+        status: ${{ env.COVERAGE }}%
+        path: ${{ steps.coverage.outputs.path }}
 
     # Use the output from the `coverage` step
     - name: Generate the badge SVG image
