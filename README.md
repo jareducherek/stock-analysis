@@ -1,7 +1,7 @@
 stock-analysis
 ==============================
 ![Tests](https://github.com/jareducherek/stock-analysis/actions/workflows/tests.yml/badge.svg)
-![Test Coverage](https://github.com/jareducherek/stock-analysis/.github/badges/coverage.svg)
+![Test Coverage](https://github.com/jareducherek/stock-analysis/blob/master/.github/badges/coverage.svg)
 
 Exploratory data analysis and machine learning techniques applied to time-series data associated with stock prices.
 

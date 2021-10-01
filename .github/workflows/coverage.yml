@@ -33,7 +33,6 @@ jobs:
         coverage=$(pytest --cov=src/ tests/ | grep TOTAL | tail -c 5 | grep -Eo '[0-9]{1,4}')
         # Generates a GitHub Workflow output named `lines`
         echo "COVERAGE=${coverage}" >> $GITHUB_ENV
-        echo "##[set-output name=lines;]${COVERAGE}"
       env:
         BADGE_PATH: .github/badges/coverage.svg
 
