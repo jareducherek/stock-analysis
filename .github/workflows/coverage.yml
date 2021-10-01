@@ -35,7 +35,7 @@ jobs:
         coverage=$(pytest --cov=src/ tests/ | grep TOTAL | tail -c 5 | grep -Eo '[0-9]{1,4}')
         echo "COVERAGE=${coverage}" >> $GITHUB_ENV
       env:
-        BADGE_PATH: .github/badges/test-badge.svg
+        BADGE_PATH: .github/badges/coverage-badge.svg
 
     - name: Badge Action
       uses: emibcn/badge-action@v1.2.4
