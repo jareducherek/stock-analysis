@@ -24,6 +24,11 @@ endif
 requirements: test_environment
 	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
+
+## Install Development Python Dependencies
+development: requirements
+	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
+	$(PYTHON_INTERPRETER) -m pip install -r requirements_dev.txt
 ifeq (True,$(HAS_CONDA))
 	@echo ">>> Detected conda, creating conda environment."
 	$(PYTHON_INTERPRETER) -m pip install "pymongo[srv]"
@@ -86,7 +91,6 @@ test_environment:
 #################################################################################
 # PROJECT RULES                                                                 #
 #################################################################################
-
 
 
 #################################################################################

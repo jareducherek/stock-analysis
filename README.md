@@ -13,6 +13,10 @@ make create_environment
 conda activate stock-analysis
 make requirements
 ```
+- optional, install helpful tools for development, (e.g. jupyter, pytest):
+```
+make development
+```
 
 Running
 ==============================
